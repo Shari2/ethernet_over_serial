@@ -1,0 +1,20 @@
+#ifndef PORT_lwipopts_H
+#define PORT_lwipopts_H
+
+#define NO_SYS 1
+
+#define SYS_LIGHTWEIGHT_PROT 0
+
+#define LWIP_SOCKET 0
+#define LWIP_NETCONN 0
+
+#define LWIP_ETHERNET 0
+#define LWIP_ARP 0
+
+#define IP_REASSEMBLY 0
+#define IP_FRAG 0
+
+#define LWIP_UDP 0
+#define LWIP_TCP 0
+
+#endif
