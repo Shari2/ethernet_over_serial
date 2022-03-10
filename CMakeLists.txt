@@ -40,3 +40,5 @@ add_library(lib::static::lwip ALIAS lwip)
 add_executable(icmp_server main.c)
 target_link_libraries(icmp_server PRIVATE lib::static::lwip)
 target_link_options(icmp_server PRIVATE -Xlinker -Map=icmp_server.map)
+
+add_custom_command(TARGET icmp_server POST_BUILD COMMAND size -x -t $<TARGET_FILE:icmp_server>)
