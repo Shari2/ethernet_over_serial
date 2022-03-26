@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2022 Marian Sauer
+//
+// SPDX-License-Identifier: BSD-2-Clause
+
 #include "lwip/init.h"
 #include "lwip/ip.h"
 #include "lwip/timeouts.h"

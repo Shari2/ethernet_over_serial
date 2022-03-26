@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2022 Marian Sauer
+#
+# SPDX-License-Identifier: BSD-2-Clause
+
 cmake_minimum_required(VERSION 3.16)
 project(lwip_icmp_server)
 

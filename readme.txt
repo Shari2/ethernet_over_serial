@@ -1,4 +1,7 @@
-1. patch tty0tty
+SPDX-License-Identifier: BSD-2-Clause
+SPDX-FileCopyrightText: Copyright (c) 2022 Marian Sauer
+
+1. wonky patch tty0tty
 
 diff --git a/module/tty0tty.c b/module/tty0tty.c
 index 3af0d8b..bf98aa3 100644
