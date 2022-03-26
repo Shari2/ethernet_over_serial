@@ -13,8 +13,12 @@
 
 #define IP_REASSEMBLY 0
 #define IP_FRAG 0
+//#define IP_FORWARD 1
 
 #define LWIP_UDP 0
 #define LWIP_TCP 0
+
+//#define LWIP_DEBUG 1
+//#define IP_DEBUG LWIP_DBG_ON
 
 #endif

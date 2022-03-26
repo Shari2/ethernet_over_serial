@@ -7,6 +7,8 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <fcntl.h>
+#include <time.h>
+#include <unistd.h>
 
 void
 sio_send(u8_t c, sio_fd_t fd)
@@ -14,6 +16,14 @@ sio_send(u8_t c, sio_fd_t fd)
   int ret = write(fd,
                   &c,
                   sizeof(c));
+#if 0
+  if (ret)
+  {
+    printf("-> %u 0x%02x\n",
+           (uint32_t) time(NULL),
+           c);
+  }
+#endif
 }
 
 sio_fd_t
@@ -31,8 +41,14 @@ sio_tryread(sio_fd_t fd, uint8_t *data, uint32_t len)
   int ret = read(fd,
                  data,
                  len);
-
+#if 0
+  return (ret > 0) ? printf("<- %u 0x%02x\n",
+                            (uint32_t) time(NULL),
+                            *data), ret :
+                     0;
+#else
   return (ret > 0) ? ret : 0;
+#endif
 }
 
 int
@@ -84,8 +100,9 @@ main(int argc, char **argv)
 
   while (1)
   {
-    sys_check_timeouts();
+    //sys_check_timeouts();
     slipif_poll(&slipif1);
+    //usleep(100);
   }
 
 }
