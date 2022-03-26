@@ -26,7 +26,7 @@ sudo modprobe tty0tty
 
 4. linux slip
 sudo modprobe slip
-sudo slattach -p slip /dev/tnt1 &
+sudo slattach -p slip /dev/tnt0 &
 
 5. build and run
 cmake -H. -Bbuild -GNinja
@@ -39,3 +39,7 @@ sudo ip addr add 10.0.0.1/24 dev sl0
 sudo ip link set dev sl0 up
 
 ping 10.0.0.2
+
+
+9001. over 9000
+plantuml -svg network.plantuml

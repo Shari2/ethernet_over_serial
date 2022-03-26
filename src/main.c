@@ -33,7 +33,9 @@ sio_send(u8_t c, sio_fd_t fd)
 sio_fd_t
 sio_open(u8_t devnum)
 {
-  int fd = open("/dev/tnt0",
+  char dev_name[11] = "/dev/tnt10";
+  snprintf(dev_name, sizeof(dev_name), "/dev/tnt%u", devnum);
+  int fd = open(dev_name,
                 O_NONBLOCK | O_RDWR);
 
   return (fd > 0) ? fd : 0;
@@ -63,7 +65,7 @@ main(int argc, char **argv)
 // or
 // b) primary request -> timeout (100 ms)
 
-  uint8_t num_slip1 = 0;
+  ptrdiff_t num_slip1 = 3; // tnt3
   ip4_addr_t ipaddr_slip1;
   ip4_addr_t netmask_slip1;
   ip4_addr_t gw_slip1;
@@ -73,17 +75,17 @@ main(int argc, char **argv)
 
   IP4_ADDR(&ipaddr_slip1,
            10,
-           0,
+           1,
            0,
            2);
   IP4_ADDR(&netmask_slip1,
            255,
            255,
-           255,
+           0,
            0);
   IP4_ADDR(&gw_slip1,
            10,
-           0,
+           1,
            0,
            1);
 
@@ -91,7 +93,7 @@ main(int argc, char **argv)
                                 &ipaddr_slip1,
                                 &netmask_slip1,
                                 &gw_slip1,
-                                &num_slip1,
+                                (void *)num_slip1,
                                 slipif_init,
                                 ip_input);
   LWIP_ASSERT("netif_add failed",
@@ -106,7 +108,7 @@ main(int argc, char **argv)
   {
     //sys_check_timeouts();
     slipif_poll(&slipif1);
-    //usleep(100);
+    usleep(100);
   }
 
 }

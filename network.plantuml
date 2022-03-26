@@ -1,0 +1,19 @@
+@startuml
+nwdiag {
+  network tty0tty {
+      address = "10.x.x.x/15"
+
+      sl0 [address = "10.x.x.2, tnt0"];
+      slipif1 [address = "10.x.x.1, tnt1"];
+      slipif1 -- slipif2;
+  }
+
+  network tty0tty {
+      address = "10.1.x.x/16";
+
+      slipif2 [address = "10.1.x.1, tnt2"]
+      service1_slipif1 [address = "10.1.x.2, tnt3"];
+      service2_slipif1 [address = "10.1.x.3"];
+  }
+}
+@enduml
