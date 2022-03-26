@@ -3,5 +3,5 @@
 # SPDX-License-Identifier: BSD-2-Clause
 
 [submodule "lwip"]
-	path = lwip
+	path = third_party/lwip
 	url = https://git.savannah.nongnu.org/git/lwip.git

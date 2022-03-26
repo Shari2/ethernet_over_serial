@@ -8,40 +8,43 @@ project(lwip_icmp_server)
 add_compile_options(-fdata-sections -ffunction-sections)
 add_link_options(-Wl,--gc-sections)
 
-add_library(port STATIC "port/arch/sys_arch.c")
-target_include_directories(port PUBLIC "port")
+add_library(port STATIC "src/port/arch/sys_arch.c")
+target_include_directories(port PUBLIC "inc/port")
 
-set(LWIP_CORE "lwip/src/core")
+set(LWIP_SRC "third_party/lwip/src")
+set(LWIP_CORE "${LWIP_SRC}/core")
 
 add_library(lwip STATIC "${LWIP_CORE}/init.c")
 
 target_sources(lwip PRIVATE
-  "lwip/src/core/ipv4/icmp.c"
-  "lwip/src/core/ipv4/ip4.c"
-  "lwip/src/core/ipv4/ip4_addr.c"
+  "${LWIP_CORE}/ipv4/icmp.c"
+  "${LWIP_CORE}/ipv4/ip4.c"
+  "${LWIP_CORE}/ipv4/ip4_addr.c"
 )
   
 target_sources(lwip PRIVATE
-  "lwip/src/core/netif.c"
-  "lwip/src/core/timeouts.c"
-  "lwip/src/core/stats.c"
-  "lwip/src/core/mem.c"
-  "lwip/src/core/memp.c"
-  "lwip/src/core/ip.c"
-  "lwip/src/core/pbuf.c"
-  "lwip/src/core/def.c"
-  "lwip/src/core/inet_chksum.c"
+  "${LWIP_CORE}/netif.c"
+  "${LWIP_CORE}/timeouts.c"
+  "${LWIP_CORE}/stats.c"
+  "${LWIP_CORE}/mem.c"
+  "${LWIP_CORE}/memp.c"
+  "${LWIP_CORE}/ip.c"
+  "${LWIP_CORE}/pbuf.c"
+  "${LWIP_CORE}/def.c"
+  "${LWIP_CORE}/inet_chksum.c"
 )
+
+
 
 target_sources(lwip PRIVATE
-  "lwip/src/netif/slipif.c"
+  "${LWIP_SRC}/netif/slipif.c"
 )
 
-target_include_directories(lwip PUBLIC "lwip/src/include")
+target_include_directories(lwip PUBLIC "${LWIP_SRC}/include")
 target_link_libraries(lwip PUBLIC port)
 add_library(lib::static::lwip ALIAS lwip)
 
-add_executable(icmp_server main.c)
+add_executable(icmp_server "src/main.c")
 target_link_libraries(icmp_server PRIVATE lib::static::lwip)
 target_link_options(icmp_server PRIVATE -Xlinker -Map=icmp_server.map)
 
