@@ -5,8 +5,6 @@
 cmake_minimum_required(VERSION 3.16)
 project(lwip_icmp_server)
 
-add_compile_options(-fdata-sections -ffunction-sections)
-add_link_options(-Wl,--gc-sections)
 
 add_library(port STATIC "src/port/arch/sys_arch.c")
 target_include_directories(port PUBLIC "inc/port")
