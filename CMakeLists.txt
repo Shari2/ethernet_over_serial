@@ -52,3 +52,6 @@ add_custom_command(TARGET icmp_server POST_BUILD COMMAND size -x -t $<TARGET_FIL
 
 add_executable(icmp_server_dual_interface "src/main_dual_interface.c")
 target_link_libraries(icmp_server_dual_interface PRIVATE lib::static::lwip)
+target_link_options(icmp_server_dual_interface PRIVATE -Xlinker -Map=icmp_server_dual_interface.map)
+
+add_custom_command(TARGET icmp_server_dual_interface POST_BUILD COMMAND size -x -t $<TARGET_FILE:icmp_server_dual_interface>)
