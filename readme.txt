@@ -26,7 +26,7 @@ sudo modprobe tty0tty
 
 4. linux slip
 sudo modprobe slip
-sudo slattach -p slip /dev/tnt0 &
+sudo slattach -p slip /dev/tnt2 &
 
 5. build and run
 cmake -H. -Bbuild -GNinja
@@ -35,11 +35,14 @@ ninja -C ./build
 ./build/icmp_server &
 
 6. configure and ping
-sudo ip addr add 10.0.0.1/24 dev sl0
+sudo ip addr add 10.1.0.1/24 dev sl0
 sudo ip link set dev sl0 up
 
 ping 10.0.0.2
 
+7. test udp
+socat -d - UDP4-SENDTO:10.1.0.2:1234
+HELLO
 
 9001. over 9000
 plantuml -svg network.plantuml

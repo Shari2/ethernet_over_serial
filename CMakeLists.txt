@@ -15,6 +15,7 @@ set(LWIP_CORE "${LWIP_SRC}/core")
 add_library(lwip STATIC "${LWIP_CORE}/init.c")
 
 target_sources(lwip PRIVATE
+  "${LWIP_CORE}/udp.c"
   "${LWIP_CORE}/ipv4/icmp.c"
   "${LWIP_CORE}/ipv4/ip4.c"
   "${LWIP_CORE}/ipv4/ip4_addr.c"
@@ -42,7 +43,8 @@ target_include_directories(lwip PUBLIC "${LWIP_SRC}/include")
 target_link_libraries(lwip PUBLIC port)
 add_library(lib::static::lwip ALIAS lwip)
 
-add_executable(icmp_server "src/main.c")
+add_executable(icmp_server "src/main.c" "src/udp_server.c")
+target_include_directories(lwip PUBLIC "inc/usecase/")
 target_link_libraries(icmp_server PRIVATE lib::static::lwip)
 target_link_options(icmp_server PRIVATE -Xlinker -Map=icmp_server.map)
 

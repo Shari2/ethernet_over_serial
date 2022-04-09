@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: BSD-2-Clause
 
+#include "server/udp.h"
+
 #include "lwip/init.h"
 #include "lwip/ip.h"
 #include "lwip/timeouts.h"
@@ -103,6 +105,11 @@ main(int argc, char **argv)
 
   netif_set_up(&slipif1);
   netif_set_link_up(&slipif1);
+
+  #if defined(LWIP_UDP) && LWIP_UDP
+    udp_server_setup();
+  #endif
+
 
   while (1)
   {

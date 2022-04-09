@@ -22,10 +22,11 @@
 #define LWIP_ICMP 1
 //#define LWIP_NOASSERT 0
 
-#define LWIP_UDP 0
+#define LWIP_UDP 1
 #define LWIP_TCP 0
 
 //#define LWIP_DEBUG 1
 //#define IP_DEBUG LWIP_DBG_ON
+//#define UDP_DEBUG LWIP_DBG_ON
 
 #endif
