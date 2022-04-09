@@ -19,6 +19,9 @@
 #define IP_FRAG 0
 #define IP_FORWARD 1
 
+#define LWIP_ICMP 1
+//#define LWIP_NOASSERT 0
+
 #define LWIP_UDP 0
 #define LWIP_TCP 0
 
