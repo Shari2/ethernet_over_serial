@@ -33,7 +33,7 @@ sio_send(u8_t c, sio_fd_t fd)
 sio_fd_t
 sio_open(u8_t devnum)
 {
-  char dev_name[11] = "/dev/tnt10";
+  char dev_name[] = "/dev/tnt255";
   snprintf(dev_name, sizeof(dev_name), "/dev/tnt%u", devnum);
   int fd = open(dev_name,
                 O_NONBLOCK | O_RDWR);
