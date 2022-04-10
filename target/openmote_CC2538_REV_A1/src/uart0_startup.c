@@ -55,5 +55,13 @@ uart0_startup(void)
   UARTEnable(uart0_instance());
 }
 
+int _write(int file, char *ptr, int len)
+{
+  for(int i = 0; i < len; i++)
+  {
+    UARTCharPut(uart0_instance(), *(ptr + i));
+  }
+  return len;
+}
 
 

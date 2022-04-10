@@ -9,19 +9,59 @@
 
 int usleep(useconds_t a)
 {
+  volatile uint32_t cycle_burn = (1<<10) * a;
+  while(cycle_burn--);
 }
 
-
-int printf (const char *__restrict __format, ...)
+void
+abort(void)
 {
-  return 0;
+  leds_error_on();
+  while(1);
 }
 
+
+
+#if 0
+
+#define ENOMEM      12
+uint32_t errno = 0;
+
+void *
+_sbrk (int  incr)
+{
+    extern char __heap_start;//set by linker
+    extern char __heap_end;//set by linker
+
+    static char *heap_end;      /* Previous end of heap or 0 if none */
+    char        *prev_heap_end;
+
+    if (0 == heap_end) {
+        heap_end = &__heap_start;           /* Initialize first time round */
+    }
+
+    prev_heap_end  = heap_end;
+    heap_end      += incr;
+    //check
+    if( heap_end < (&__heap_end)) {
+
+    } else {
+        errno = ENOMEM;
+        return (char*)-1;
+    }
+    return (void *) prev_heap_end;
+
+}
+#endif
+
+#if 0
 int fflush (void *__stream)
 {
   return 0;
 }
+#endif
 
+#if 0
 void abort (void)
 {
   while(1);
@@ -48,3 +88,4 @@ void *memcpy(void *__restrict __dest, const void *__restrict __src,
   return __dest;
 }
 
+#endif

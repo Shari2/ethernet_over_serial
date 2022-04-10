@@ -11,6 +11,7 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <string.h>
+#include <stdio.h>
 
 #define FLASH_START_ADDR                0x00200000
 #define BOOTLOADER_BACKDOOR_ENABLE      0xF6FFFFFF // ENABLED: PORT A, PIN 6, LOW
@@ -240,10 +241,50 @@ NmiSR (void)
     }
 }
 
+void prvGetRegistersFromStack( uint32_t *pulFaultStackAddress )
+{
+/* These are volatile to try and prevent the compiler/linker optimising them
+away as the variables never actually get used.  If the debugger won't show the
+values of the variables, make them global my moving their declaration outside
+of this function. */
+volatile uint32_t r0;
+volatile uint32_t r1;
+volatile uint32_t r2;
+volatile uint32_t r3;
+volatile uint32_t r12;
+volatile uint32_t lr; /* Link register. */
+volatile uint32_t pc; /* Program counter. */
+volatile uint32_t psr;/* Program status register. */
+
+    r0 = pulFaultStackAddress[ 0 ];
+    r1 = pulFaultStackAddress[ 1 ];
+    r2 = pulFaultStackAddress[ 2 ];
+    r3 = pulFaultStackAddress[ 3 ];
+
+    r12 = pulFaultStackAddress[ 4 ];
+    lr = pulFaultStackAddress[ 5 ];
+    pc = pulFaultStackAddress[ 6 ];
+    psr = pulFaultStackAddress[ 7 ];
+
+    /* When the following line is hit, the variables contain the register values. */
+    for( ;; );
+}
 
 void
 FaultISR (void)
 {
+  __asm volatile
+  (
+      " tst lr, #4                                                \n"
+      " ite eq                                                    \n"
+      " mrseq r0, msp                                             \n"
+      " mrsne r0, psp                                             \n"
+      " ldr r1, [r0, #24]                                         \n"
+      " ldr r2, handler2_address_const                            \n"
+      " bx r2                                                     \n"
+      " handler2_address_const: .word prvGetRegistersFromStack    \n"
+  );
+
     while(1)
     {
     }
@@ -259,6 +300,9 @@ IntDefaultHandler (void)
 }
 
 extern void uart0_startup(void);
+
+void itm_port0_putc(uint8_t c);
+
 
 void
 ResetISR(void)
@@ -319,7 +363,7 @@ ResetISR(void)
   HWREG(DEMCR) |= DEMCR_TRCENA;
 
   // async output prescaler - 1
-  HWREG(TPIU_ACPR) = 31;
+  HWREG(TPIU_ACPR) = 7;
 
   // Unlock
   HWREG(ITM_LOCK_ACCESS) = ITM_UNCLOCK_KEY;
@@ -353,9 +397,7 @@ ResetISR(void)
     char *iter = buff;
     while (*iter)
     {
-      while (0 == HWREG(ITM_PORT0))
-        ;
-      *(volatile char*) (ITM_PORT0) = *iter;
+      itm_port0_putc(*iter);
       iter++;
     };
   }
@@ -365,9 +407,17 @@ ResetISR(void)
     ;
   *(volatile uint32_t*) (ITM_PORT1) = 0xdeadbeef;
 
+
+
   leds_init();
 
   uart0_startup();
+
+  UARTCharPut(uart0_instance(), 'a');
+
+  leds_radio_on();
+  printf("blub\n");
+  leds_debug_on();
 
   main(0,
        NULL);
@@ -383,4 +433,11 @@ ResetISR(void)
     leds_debug_toggle();
 
   }
+}
+
+void itm_port0_putc(uint8_t c)
+{
+  while (0 == HWREG(ITM_PORT0))
+          ;
+  *(volatile char*) (ITM_PORT0) = c;
 }

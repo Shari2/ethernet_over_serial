@@ -20,7 +20,7 @@ sio_open(uint8_t devnum)
 {
   switch(devnum)
   {
-    case 0:
+    case 3:
       return uart0_instance();
     default:
       return 0;
@@ -38,6 +38,7 @@ sio_tryread(sio_fd_t fd, uint8_t *data, uint32_t len)
     return 0;
   } else {
     *data = c;
+    itm_port0_putc(c);
     return 1;
   }
 }

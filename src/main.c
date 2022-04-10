@@ -68,7 +68,6 @@ main(int argc, char **argv)
   {
     //sys_check_timeouts();
     slipif_poll(&slipif1);
-    usleep(100);
   }
 
 }

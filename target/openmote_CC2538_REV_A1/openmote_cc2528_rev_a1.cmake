@@ -14,7 +14,7 @@ set(CMAKE_CXX_COMPILER "arm-none-eabi-g++")
 
 
 set(GCC_CORTEX_M3_COMMON_FLAGS "-ffunction-sections -fdata-sections")
-set(GCC_CORTEX_M3_32BIT_FLAGS "-mcpu=cortex-m3 -mthumb -Xlinker --gc-sections -nostartfiles -nostdlib")
+set(GCC_CORTEX_M3_32BIT_FLAGS "-mcpu=cortex-m3 -mthumb -Xlinker --gc-sections -nostartfiles -specs=nosys.specs")
 
 
 
