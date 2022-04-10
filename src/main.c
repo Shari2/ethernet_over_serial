@@ -10,6 +10,8 @@
 #include "lwip/sio.h"
 #include "netif/slipif.h"
 
+#include <unistd.h>
+
 int
 main(int argc, char **argv)
 {

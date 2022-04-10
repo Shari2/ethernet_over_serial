@@ -7,7 +7,9 @@ project(lwip_icmp_server)
 
 
 
-if(PORT_OPENTMOTE)
+if(PORT_OPENMOTE_CC2538)
+  add_subdirectory(third_party/openWSN)
+  add_subdirectory(third_party/ti)
   add_subdirectory(target/openmote_CC2538_REV_A1)
 else()
   add_subdirectory(target/pc)
@@ -28,7 +30,7 @@ target_sources(lwip PRIVATE
   "${LWIP_CORE}/ipv4/ip4.c"
   "${LWIP_CORE}/ipv4/ip4_addr.c"
 )
-  
+
 target_sources(lwip PRIVATE
   "${LWIP_CORE}/netif.c"
   "${LWIP_CORE}/timeouts.c"
@@ -57,6 +59,15 @@ target_link_libraries(icmp_server PRIVATE lib::static::lwip)
 target_link_options(icmp_server PRIVATE -Xlinker -Map=icmp_server.map)
 
 add_custom_command(TARGET icmp_server POST_BUILD COMMAND size -t $<TARGET_FILE:icmp_server>)
+if(PORT_OPENMOTE_CC2538)
+  add_custom_command(TARGET icmp_server POST_BUILD COMMAND arm-none-eabi-objcopy -O ihex $<TARGET_FILE:icmp_server> $<TARGET_FILE_BASE_NAME:icmp_server>.ihex )
+
+  add_custom_target(
+  flash_cc2538_with_icmp_server
+  COMMAND ./third_party/openWSN/cc2538-bsl.py -e --bootloader-invert-lines -w -b 115200 -p /dev/ttyUSB0 "$<TARGET_FILE_DIR:icmp_server>/$<TARGET_FILE_BASE_NAME:icmp_server>.ihex"
+  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+  )
+endif()
 
 add_executable(icmp_server_dual_interface "src/main_dual_interface.c")
 target_link_libraries(icmp_server_dual_interface PRIVATE lib::static::lwip)

@@ -9,7 +9,7 @@
 
 typedef unsigned int sys_prot_t;
 
-#define sio_fd_t int
+#define sio_fd_t uint32_t
 #define __sio_fd_t_defined
 
 #endif

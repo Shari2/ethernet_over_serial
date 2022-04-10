@@ -29,8 +29,14 @@ MEMORY
     SRAM (RWX)     : ORIGIN = 0x20004000, LENGTH = 0x00004000 
 }
 
+/* use rom functions
+PROVIDE(memset = 0x00000048 + 24);
+PROVIDE(memcpy = 0x00000048 + 28);
+*/
+
 SECTIONS
 {
+  
 	/* Set stack top to end of RAM */
 	__StackTop = ORIGIN(SRAM) + LENGTH(SRAM);
     .text :
