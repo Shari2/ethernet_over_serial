@@ -11,15 +11,17 @@
 #include "lwip/netif.h"
 
 struct tapif {
-  struct eth_addr *ethaddr;
   /* Add whatever per-interface state that is needed here. */
   int fd;
   char *name;
   ip_addr_t ip_addr;
   ip_addr_t netmask;
   ip_addr_t gw;
+  struct pbuf * p;
 };
 
 err_t tapif_init(struct netif *netif);
+
+void tapif_poll(struct netif *netif);
 
 #endif /* __TAPIF_H__ */

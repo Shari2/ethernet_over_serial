@@ -363,7 +363,7 @@ ResetISR(void)
   HWREG(DEMCR) |= DEMCR_TRCENA;
 
   // async output prescaler - 1
-  HWREG(TPIU_ACPR) = 7;
+  HWREG(TPIU_ACPR) = 3;
 
   // Unlock
   HWREG(ITM_LOCK_ACCESS) = ITM_UNCLOCK_KEY;
@@ -407,17 +407,9 @@ ResetISR(void)
     ;
   *(volatile uint32_t*) (ITM_PORT1) = 0xdeadbeef;
 
-
-
   leds_init();
 
   uart0_startup();
-
-  UARTCharPut(uart0_instance(), 'a');
-
-  leds_radio_on();
-  printf("blub\n");
-  leds_debug_on();
 
   main(0,
        NULL);

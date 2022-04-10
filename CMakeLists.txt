@@ -13,7 +13,9 @@ if(PORT_OPENMOTE_CC2538)
   add_subdirectory(target/openmote_CC2538_REV_A1)
 else()
   add_subdirectory(target/pc)
+  add_subdirectory(third_party/lwip-tap)
 endif()
+
 
 # lwipopts.h is shared by all ports
 target_include_directories(port PUBLIC "inc/port")
@@ -69,8 +71,11 @@ if(PORT_OPENMOTE_CC2538)
   )
 endif()
 
-add_executable(icmp_server_dual_interface "src/main_dual_interface.c")
-target_link_libraries(icmp_server_dual_interface PRIVATE lib::static::lwip)
-target_link_options(icmp_server_dual_interface PRIVATE -Xlinker -Map=icmp_server_dual_interface.map)
+# tun/tap only avilable on pc
+if(NOT PORT_OPENMOTE_CC2538)
+  add_executable(icmp_server_dual_interface "src/main_dual_interface.c")
+  target_link_libraries(icmp_server_dual_interface PRIVATE lib::static::lwip_tap lib::static::lwip)
+  target_link_options(icmp_server_dual_interface PRIVATE -Xlinker -Map=icmp_server_dual_interface.map)
 
-add_custom_command(TARGET icmp_server_dual_interface POST_BUILD COMMAND size -t $<TARGET_FILE:icmp_server_dual_interface>)
+  add_custom_command(TARGET icmp_server_dual_interface POST_BUILD COMMAND size -t $<TARGET_FILE:icmp_server_dual_interface>)
+endif()

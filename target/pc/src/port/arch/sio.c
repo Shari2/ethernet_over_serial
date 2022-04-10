@@ -15,6 +15,11 @@ sio_send(uint8_t c, sio_fd_t fd)
   int ret = write(fd,
                   &c,
                   sizeof(c));
+
+  if(ret < 0)
+  {
+    perror("sio_send");
+  }
 #if 0
   if (ret)
   {
@@ -28,8 +33,8 @@ sio_send(uint8_t c, sio_fd_t fd)
 sio_fd_t
 sio_open(uint8_t devnum)
 {
-  char dev_name[] = "/dev/tnt255";
-  snprintf(dev_name, sizeof(dev_name), "/dev/tnt%u", devnum);
+  char dev_name[] = "/dev/ttyUSB255";
+  snprintf(dev_name, sizeof(dev_name), "/dev/ttyUSB%u", devnum);
   int fd = open(dev_name,
                 O_NONBLOCK | O_RDWR);
 

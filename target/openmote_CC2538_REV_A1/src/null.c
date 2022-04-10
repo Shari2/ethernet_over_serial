@@ -6,6 +6,8 @@
 #include <unistd.h>
 #include <stdint.h>
 
+#include "openmote_cc2538/leds.h"
+
 
 int usleep(useconds_t a)
 {

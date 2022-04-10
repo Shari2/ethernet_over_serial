@@ -58,8 +58,13 @@ ping 10.1.0.2
 socat -d - UDP4-SENDTO:10.1.0.2:1234
 HELLO
 
+# capability to no run as root (tapif_init: /dev/net/tun ioctl TUNSETIFF: Operation not permitted)
+sudo setcap cap_net_admin=eip ./build/icmp_server_dual_interface
+sudo ip link set dev tun0 up
 
-
+# set route instead of ip so kernel does not respond to icmp
+sudo ip route add 10.0.0.0/15 dev tun0
+ping 10.0.0.1
 
 
 9001. over 9000

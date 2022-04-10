@@ -48,7 +48,7 @@ uart0_startup(void)
 
   UARTConfigSetExpClk(uart0_instance(),
                       SysCtrlClockGet(),
-                      115200,
+                      1000000,
                       (UART_CONFIG_WLEN_8 | UART_CONFIG_STOP_ONE |
                       UART_CONFIG_PAR_NONE));
 
@@ -59,7 +59,7 @@ int _write(int file, char *ptr, int len)
 {
   for(int i = 0; i < len; i++)
   {
-    UARTCharPut(uart0_instance(), *(ptr + i));
+    //UARTCharPut(uart0_instance(), *(ptr + i));
   }
   return len;
 }

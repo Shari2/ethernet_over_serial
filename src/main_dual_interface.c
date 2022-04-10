@@ -7,12 +7,14 @@
 #include "lwip/timeouts.h"
 #include "lwip/sio.h"
 #include "netif/slipif.h"
+#include "lwip_tap/tapif.h"
 
+#include <string.h>
 
 int
 main(int argc, char **argv)
 {
-  struct netif slipif1;
+  struct netif tapif1;
   struct netif slipif2;
 
   lwip_init();
@@ -20,46 +22,45 @@ main(int argc, char **argv)
   struct netif *ret;
 
   {
-    ptrdiff_t num_slip1 = 1; // tnt1
-    ip4_addr_t ipaddr_slip1;
-    ip4_addr_t netmask_slip1;
-    ip4_addr_t gw_slip1;
-    IP4_ADDR(&ipaddr_slip1,
+    ip4_addr_t ipaddr_tap1;
+    ip4_addr_t netmask_tap1;
+    ip4_addr_t gw_tap1;
+    IP4_ADDR(&ipaddr_tap1,
              10,
              0,
              0,
              1);
-    IP4_ADDR(&netmask_slip1,
+    IP4_ADDR(&netmask_tap1,
              255,
              254,
              0,
              0);
-    IP4_ADDR(&gw_slip1,
+    IP4_ADDR(&gw_tap1,
              0,
              0,
              0,
              0);
 
-    ret = netif_add(&slipif1,
-                    &ipaddr_slip1,
-                    &netmask_slip1,
-                    &gw_slip1,
-                    (void *)num_slip1,
-                    slipif_init,
+    ret = netif_add(&tapif1,
+                    &ipaddr_tap1,
+                    &netmask_tap1,
+                    &gw_tap1,
+                    NULL,
+                    tapif_init,
                     ip_input);
   }
 
   LWIP_ASSERT("netif_add failed",
-              ret == &slipif1);
+              ret == &tapif1);
 
-  netif_set_default(&slipif1);
+  netif_set_default(&tapif1);
 
-  netif_set_up(&slipif1);
-  netif_set_link_up(&slipif1);
+  netif_set_up(&tapif1);
+  netif_set_link_up(&tapif1);
 
-
+#if 1
   {
-    ptrdiff_t num_slip2 = 2; // tnt2
+    ptrdiff_t num_slip2 = 0; // USB0
     ip4_addr_t ipaddr_slip2;
     ip4_addr_t netmask_slip2;
     ip4_addr_t gw_slip2;
@@ -93,11 +94,12 @@ main(int argc, char **argv)
 
   netif_set_up(&slipif2);
   netif_set_link_up(&slipif2);
+#endif
 
   while (1)
   {
     //sys_check_timeouts();
-    slipif_poll(&slipif1);
+    tapif_poll(&tapif1);
     slipif_poll(&slipif2);
     usleep(100);
   }
