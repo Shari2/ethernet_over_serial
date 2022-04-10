@@ -6,8 +6,16 @@ cmake_minimum_required(VERSION 3.16)
 project(lwip_icmp_server)
 
 
-add_library(port STATIC "src/port/arch/sys_arch.c")
+
+if(PORT_OPENTMOTE)
+  add_subdirectory(target/openmote_CC2538_REV_A1)
+else()
+  add_subdirectory(target/pc)
+endif()
+
+# lwipopts.h is shared by all ports
 target_include_directories(port PUBLIC "inc/port")
+
 
 set(LWIP_SRC "third_party/lwip/src")
 set(LWIP_CORE "${LWIP_SRC}/core")
