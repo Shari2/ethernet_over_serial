@@ -1,70 +1,31 @@
 SPDX-License-Identifier: BSD-2-Clause
 SPDX-FileCopyrightText: Copyright (c) 2022 Marian Sauer
 
-1. wonky patch tty0tty
 
-diff --git a/module/tty0tty.c b/module/tty0tty.c
-index 3af0d8b..bf98aa3 100644
---- a/module/tty0tty.c
-+++ b/module/tty0tty.c
-@@ -273,6 +273,8 @@ static int tty0tty_write(struct tty_struct *tty, const unsigned char *buffer, in
- 
- exit:
-        up(&tty0tty->sem);
-+       if(ttyx)
-+           tty_wakeup(tty);
-        return retval;
- }
+1. build
+cmake -H. -B./build_pc -GNinja -DCMAKE_BUILD_TYPE=DEBUG -DCMAKE_TOOLCHAIN_FILE=./target/pc/gcc_x86_32bit.cmake
+ninja -C ./build_pc
 
-2. build
-make
-sudo make install
+cmake -H. -B./build_openmote -GNinja -DCMAKE_BUILD_TYPE=DEBUG -DCMAKE_TOOLCHAIN_FILE=./target/openmote_CC2538_REV_A1/openmote_cc2528_rev_a1.cmake
+ninja -C ./build_openmote
 
-3. load
-sudo modprobe tty0tty
+2. run (mote should be ttyUSB0)
+ninja -C ./build_openmote flash_cc2538_with_icmp_server
+
+sudo setcap cap_net_admin=eip ./build_pc/icmp_server_dual_interface
+./build_pc/icmp_server_dual_interface &
+
+# icmp_server_dual_interface needs cap_net_admin to setup tun/tap and set route
+# icmp_server_dual_interface will setup tun interface with a route instead of ip so kernel will not handle icmp
 
 
-4a. linux slip (single hop)
-sudo modprobe slip
-sudo slattach -p slip /dev/tnt2 &
-
-4b. linux slip (routing)
-sudo modprobe slip
-sudo slattach -p slip /dev/tnt0 &
-
-5. build
-cmake -H. -Bbuild -GNinja
-ninja -C ./build
-
-6a. run (single hop)
-./build/icmp_server &
-
-6b. run (routing)
-./build/icmp_server_dual_interface &
-./build/icmp_server &
-
-7a. configure and ping (single hop)
-sudo ip addr add 10.1.0.1/16 dev sl0
-sudo ip link set dev sl0 up
-ping 10.1.0.2
-
-7b. configure and ping (routing)
-sudo ip addr add 10.0.0.2/15 dev sl0
-sudo ip link set dev sl0 up
+3. ping
 ping 10.0.0.1
 ping 10.1.0.2
 
-8. test udp
+4. test udp echo
 socat -d - UDP4-SENDTO:10.1.0.2:1234
 HELLO
-
-# capability to no run as root (tapif_init: /dev/net/tun ioctl TUNSETIFF: Operation not permitted)
-sudo setcap cap_net_admin=eip ./build/icmp_server_dual_interface
-sudo ip link set dev tun0 up
-
-# set route instead of ip so kernel does not respond to icmp
-sudo ip route add 10.0.0.0/15 dev tun0
-ping 10.0.0.1
 
 
 9001. over 9000

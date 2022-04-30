@@ -5,39 +5,47 @@
 @startuml
 
 nwdiag {
-  network tty0tty {
+  network tun_tap {
       address = "10.x.x.x/15"
 
-      a_sl0 [address = "10.x.x.2, tnt0"];
-      a_slipif1 [address = "10.x.x.1, tnt1"];
-      a_slipif1 -- a_slipif2;
+      a_tapif1 [address = "10.x.x.1, tun0"];
+      
+  }
+  
+  network internal {
+  	a_tapif1;
+  	a_slipif2;
   }
 
-  network tee {
+  network usb2uart {
       address = "10.1.x.x/16";
 
-      a_slipif2 [address = "10.1.x.1, tnt2"]
-      a_service1_slipif1 [address = "10.1.x.2, STDIN"];
-      a_service2_slipif1 [address = "10.1.x.3, STDIN"];
+      a_slipif2 [address = "10.1.x.1, ttyUSB0"]
+      a_openmote_cc2538_slipif1 [address = "10.1.x.2, uart0"];
   }
 }
 
 
-nwdiag {
-  network RS232 {
-      address = "10.x.x.x/15"
-
-      b_sl0 [address = "10.x.x.2, ttyUSB0"];
-      b_slipif1 [address = "10.x.x.1, UART1"];
-      b_slipif1 -- b_slipif2;
-  }
-
-  network RS485 {
-      address = "10.1.x.x/16";
-
-      b_slipif2 [address = "10.1.x.1, UART3"]
-      b_service1_slipif1 [address = "10.1.x.2, UART1"];
-      b_service2_slipif1 [address = "10.1.x.3, UART1"];
-  }
-}
+'/nwdiag {
+'/  network RS232 {
+'/      address = "10.x.x.x/15"
+'/
+'/      b_sl0 [address = "10.x.x.2, ttyUSB0"];
+'/      b_slipif1 [address = "10.x.x.1, UART1"];
+'/  }
+'/  
+'/  network internal {
+'/  	b_slipif1;
+'/  	b_slipif2;
+'/  	b_slipif3
+'/  }
+'/
+'/  network RS485 {
+'/      address = "10.1.x.x/16";
+'/
+'/      b_slipif2 [address = "10.1.x.1, UART3"]
+'/      b_service1_slipif1 [address = "10.1.x.2, UART1"];
+'/      b_service2_slipif1 [address = "10.1.x.3, UART1"];
+'/  }
+'/}
 @enduml
