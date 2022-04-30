@@ -69,10 +69,14 @@ low_level_probe(struct netif *netif,const char *name)
   memset(&ifr, 0, sizeof(ifr));
   strncpy(ifr.ifr_name, name, len);
 
+
   if (ioctl(s, SIOCGIFMTU, &ifr) == -1) {
     perror("tapif_init: ioctl SIOCGIFMTU");
     goto err;
   }
+
+  ifr.ifr_flags |= IFF_UP;
+  ioctl(s, SIOCSIFFLAGS, &ifr);
 
   netif->mtu = ifr.ifr_mtu;
   close(s);
