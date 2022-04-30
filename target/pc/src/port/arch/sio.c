@@ -9,6 +9,8 @@
 #include <stdio.h>
 #include <fcntl.h>
 
+#include <termios.h>
+
 void
 sio_send(uint8_t c, sio_fd_t fd)
 {
@@ -37,6 +39,30 @@ sio_open(uint8_t devnum)
   snprintf(dev_name, sizeof(dev_name), "/dev/ttyUSB%u", devnum);
   int fd = open(dev_name,
                 O_NONBLOCK | O_RDWR);
+
+  {
+    struct termios tty;
+
+    if (tcgetattr(fd, &tty) < 0) {
+      perror("Error from tcgetattr: ");
+      return -1;
+    }
+
+    cfmakeraw(&tty);
+
+    cfsetospeed(&tty, B1000000);
+    cfsetispeed(&tty, B1000000);
+
+
+
+    if (tcsetattr(fd, TCSANOW, &tty) != 0) {
+      perror("Error from tcsetattr: ");
+      return -1;
+    }
+
+    tcflush(fd, TCIOFLUSH);
+  }
+
 
   return (fd > 0) ? fd : 0;
 }
