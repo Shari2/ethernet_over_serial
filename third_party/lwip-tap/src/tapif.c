@@ -15,6 +15,7 @@
 #include <sys/types.h>
 #include <sys/uio.h>
 #include <sys/socket.h>
+#include <net/route.h>
 #include <errno.h>
 #include <assert.h>
 
@@ -60,7 +61,7 @@ low_level_probe(struct netif *netif,const char *name)
     return ERR_IF;
   }
 
-  s = socket(AF_INET,SOCK_DGRAM,0);
+  s = socket(AF_INET, SOCK_DGRAM, IPPROTO_IP);
   if (s == -1) {
     perror("tapif_init: socket");
     return ERR_IF;
@@ -77,6 +78,33 @@ low_level_probe(struct netif *netif,const char *name)
 
   ifr.ifr_flags |= IFF_UP;
   ioctl(s, SIOCSIFFLAGS, &ifr);
+
+  // add route instead of ip to the link or kernel will respond to icmp instead of application
+  struct rtentry route;
+  memset( &route, 0, sizeof( route ) );
+
+  struct sockaddr_in *addr = (struct sockaddr_in *)&route.rt_gateway;
+  addr->sin_family = AF_INET;
+  addr->sin_addr.s_addr = netif->gw.addr;
+
+  addr = (struct sockaddr_in*) &route.rt_dst;
+  addr->sin_family = AF_INET;
+  addr->sin_addr.s_addr = netif->ip_addr.addr & netif->netmask.addr;
+
+  addr = (struct sockaddr_in*) &route.rt_genmask;
+  addr->sin_family = AF_INET;
+  addr->sin_addr.s_addr = netif->netmask.addr;
+
+  route.rt_flags = RTF_UP;
+  route.rt_metric = 0;
+  route.rt_dev = ifr.ifr_name;
+
+  if(ioctl( s, SIOCADDRT, &route ))
+  {
+    perror("SIOCADDRT");
+    goto err;
+  }
+
 
   netif->mtu = ifr.ifr_mtu;
   close(s);

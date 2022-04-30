@@ -13,6 +13,7 @@
 #define LWIP_NETCONN 0
 
 #define LWIP_ARP 0
+#define LWIP_ETHERNET 0
 
 #define IP_REASSEMBLY 0
 #define IP_FRAG 0
