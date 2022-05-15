@@ -30,3 +30,15 @@ HELLO
 
 9001. over 9000
 plantuml -svg network.plantuml
+
+
+WIP tcp:
+
+Use tnt%u instead of ttyUSB%u
+Use tnt2 in icmp_server_dual_interface
+Use tnt3 in tcp_server
+
+./build_pc/icmp_server_dual_interface &
+./build_pc/tcp_server &
+
+socat - TCP4:10.1.0.2:1234

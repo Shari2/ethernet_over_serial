@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: BSD-2-Clause
 
 #include "server/udp.h"
+#include "server/tcp.h"
 
 #include "lwip/init.h"
 #include "lwip/ip.h"
@@ -59,14 +60,21 @@ main(int argc, char **argv)
   netif_set_up(&slipif1);
   netif_set_link_up(&slipif1);
 
+
   #if defined(LWIP_UDP) && LWIP_UDP
     udp_server_setup();
   #endif
 
 
+  #if defined(LWIP_TCP) && LWIP_TCP
+    tcp_server_setup();
+  #endif
+
+
+
   while (1)
   {
-    //sys_check_timeouts();
+    sys_check_timeouts(); // required for tcp
     slipif_poll(&slipif1);
   }
 

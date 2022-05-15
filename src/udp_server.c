@@ -3,9 +3,9 @@
 // SPDX-License-Identifier: BSD-2-Clause
 
 #include "server/udp.h"
-#include "lwip/udp.h"
 
 #if defined(LWIP_UDP) && LWIP_UDP
+#include "lwip/udp.h"
 
 static struct udp_pcb * server_instance()
 {

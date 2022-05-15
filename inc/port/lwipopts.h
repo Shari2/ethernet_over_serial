@@ -22,8 +22,9 @@
 #define LWIP_ICMP 1
 //#define LWIP_NOASSERT 0
 
-#define LWIP_UDP 1
-#define LWIP_TCP 0
+/* values are set as PUBLIC compile options for variant lwip_udp or lwip_tcp */
+//#define LWIP_UDP 1
+//#define LWIP_TCP 1
 
 //#define LWIP_DEBUG 1
 //#define IP_DEBUG LWIP_DBG_ON
